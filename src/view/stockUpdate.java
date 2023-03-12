@@ -135,8 +135,8 @@ public class stockUpdate extends javax.swing.JFrame {
                             .addComponent(lotnum)
                             .addComponent(drugname)
                             .addComponent(drugid)
-                            .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(119, Short.MAX_VALUE))
+                            .addComponent(date, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(81, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -165,7 +165,7 @@ public class stockUpdate extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
                     .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(save)
                     .addComponent(cancle))
@@ -207,18 +207,24 @@ public class stockUpdate extends javax.swing.JFrame {
         stockInfo.setPricePerUnit(Double.valueOf(priceperunit));
         stockInfo.setDate(date1);
         StockUpdateLogic stockUpdateLogic = new StockUpdateLogic();
+        int numOfItem = Integer.valueOf(numberofitem);
+        double pricePerUnit = Double.valueOf(priceperunit);
 
         boolean result = false;
+        boolean result2 = false;
         try {
             result = stockUpdateLogic.saveDrugInfo(stockInfo);
+            result2 = stockUpdateLogic.drugInfoTableUpdate(drugid1, numOfItem, pricePerUnit);
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
-        if (result) {
+        if (result && result2) {
             JOptionPane.showMessageDialog(null, "data entered Sucsessfully");
         } else {
             JOptionPane.showMessageDialog(null, "there is error while entering data ");
         }
+
+        result2 = stockUpdateLogic.drugInfoTableUpdate(drugid1, numOfItem, pricePerUnit);
 
 
     }//GEN-LAST:event_saveActionPerformed

@@ -65,4 +65,35 @@ public class StockUpdateLogic {
 
         return result;
     }
+
+    public boolean drugInfoTableUpdate(String drugId, int numberOfItems, double pricePerItem) {
+
+        String sql1 = "SELECT Number_of_items  FROM `drug_info` WHERE Drug_ID = ?";
+        String sql2 = "UPDATE `drug_info` SET `Number_of_items`=?,`Price_per_item`=? WHERE Drug_ID = ?";
+        PreparedStatement ps;
+        boolean result;
+        try {
+            ps = DBConection.getConnection().prepareStatement(sql1);
+            ps.setString(1, drugId);
+            ResultSet rs = ps.executeQuery();
+            int count = 0;
+            while (rs.next()) {
+                count = rs.getInt("Number_of_items");
+            }
+            int totalNumItems = count + numberOfItems;
+            ps = DBConection.getConnection().prepareStatement(sql2);
+            ps.setInt(1, totalNumItems);
+            ps.setDouble(2, pricePerItem);
+            ps.setString(3, drugId);
+            ps.executeUpdate();
+            result = true;
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            result = false;
+
+        }
+
+        return result;
+    }
 }
