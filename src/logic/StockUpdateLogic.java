@@ -5,6 +5,7 @@
  */
 package logic;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import db.DBConection;
 import java.util.Date;
 import java.sql.PreparedStatement;
@@ -57,12 +58,31 @@ public class StockUpdateLogic {
             ps.setDate(4, sqlDate);
             ps.execute();
             result = true;
+
+        } catch (MySQLIntegrityConstraintViolationException e) {
+
+            String sql1 = "UPDATE `information` SET `Lot_no`=?,`Price_per_item`=?,`Date`=? WHERE `Drug_ID` = ?";
+            try {
+                ps = DBConection.getConnection().prepareStatement(sql1);
+                ps.setString(1, stockInfo.getLotnum());
+                ps.setDouble(2, stockInfo.getPricePerUnit());
+                Date mydate = new SimpleDateFormat("YYYY-MM-dd").parse(stockInfo.getDate());
+                java.sql.Date sqlDate = new java.sql.Date(mydate.getTime());
+                ps.setDate(3, sqlDate);
+                ps.setString(4, stockInfo.getDrugId());
+                ps.executeUpdate();
+                result = true;
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+                result = false;
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
             result = false;
 
         }
-
         return result;
     }
 

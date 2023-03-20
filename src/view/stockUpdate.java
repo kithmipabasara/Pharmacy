@@ -188,7 +188,7 @@ public class stockUpdate extends javax.swing.JFrame {
     }//GEN-LAST:event_lotnumActionPerformed
 
     private void cancleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancleActionPerformed
-        // TODO add your handling code here:
+       this.dispose();
     }//GEN-LAST:event_cancleActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
