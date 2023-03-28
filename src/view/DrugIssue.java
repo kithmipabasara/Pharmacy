@@ -6,9 +6,14 @@
 package view;
 
 import com.sun.glass.events.KeyEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.util.Pair;
 import javax.swing.JOptionPane;
 import logic.DrugIssueLogic;
+import models.DrugIsueeInfo;
 import models.StockInfo;
 
 /**
@@ -115,6 +120,7 @@ public class DrugIssue extends javax.swing.JFrame {
             }
         });
 
+        NumberOfItems.setText("0");
         NumberOfItems.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 NumberOfItemsActionPerformed(evt);
@@ -123,6 +129,16 @@ public class DrugIssue extends javax.swing.JFrame {
         NumberOfItems.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 NumberOfItemsKeyPressed(evt);
+            }
+        });
+
+        Total.setText("0.0");
+
+        FullTotal.setText("0.0");
+
+        CashIn.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                CashInKeyPressed(evt);
             }
         });
 
@@ -140,6 +156,11 @@ public class DrugIssue extends javax.swing.JFrame {
         });
 
         issue.setText("issue");
+        issue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                issueActionPerformed(evt);
+            }
+        });
 
         DrugIssueTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -297,9 +318,9 @@ public class DrugIssue extends javax.swing.JFrame {
             String drugid = DrugId.getText();
             String drugname;
             double priceperitem;
-            ;
+
             StockInfo drugissuelogic = new DrugIssueLogic().getDrugDetailsById(drugid);
-            drugname =drugissuelogic.getDrugName() ;
+            drugname = drugissuelogic.getDrugName();
             priceperitem = drugissuelogic.getPricePerUnit();
             if (drugname == null) {
                 DrugName.setText("drug name not found");
@@ -312,22 +333,39 @@ public class DrugIssue extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "price per unit not found");
             } else {
                 String priceperUnit = Double.toString(priceperitem);
-                PricePerUnit.setText(priceperUnit );
+                PricePerUnit.setText(priceperUnit);
             }
         }
 
     }//GEN-LAST:event_DrugIdKeyPressed
 
     private void NumberOfItemsKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_NumberOfItemsKeyPressed
-           if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             int numberofitems = Integer.parseInt(NumberOfItems.getText());
-            double priceperunit = Double. valueOf(PricePerUnit.getText());
+            double priceperunit = Double.valueOf(PricePerUnit.getText());
+            double fulltotal = Double.valueOf(FullTotal.getText());
+            String drugId = DrugId.getText();
+
             DrugIssueLogic drugissuelogic = new DrugIssueLogic();
-            
-            double total = drugissuelogic.calculateTotal(numberofitems,priceperunit);
-            Total.setText(Double. toString(total));
-            
-            
+
+            boolean result1 = drugissuelogic.checkNumberOfItems(numberofitems, drugId);
+            if (result1) {
+                double total = priceperunit * numberofitems;
+                Total.setText(Double.toString(total));
+
+                boolean result = drugissuelogic.saveIsueTable(drugId, numberofitems,total);
+
+                if (result) {
+                    JOptionPane.showMessageDialog(null, "data entered Sucsessfully");
+                } else {
+                    JOptionPane.showMessageDialog(null, "there is error while entering data ");
+                }
+
+                fulltotal = fulltotal + total;
+                FullTotal.setText(Double.toString(fulltotal));
+            }
+
         }
 
     }//GEN-LAST:event_NumberOfItemsKeyPressed
@@ -335,6 +373,48 @@ public class DrugIssue extends javax.swing.JFrame {
     private void cancleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancleActionPerformed
         this.dispose();
     }//GEN-LAST:event_cancleActionPerformed
+
+    private void CashInKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CashInKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            double cashin = Double.valueOf(CashIn.getText());
+            double fulltotal = Double.valueOf(FullTotal.getText());
+
+           
+
+            double balance =cashin - fulltotal;
+            Balance.setText(Double.toString(balance));
+
+        }
+    }//GEN-LAST:event_CashInKeyPressed
+
+    private void issueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_issueActionPerformed
+        String oderid = OderId.getText();
+        String total = FullTotal.getText();
+        String cashin = CashIn.getText();
+        String balance = Balance.getText();
+        SimpleDateFormat dFormat = new SimpleDateFormat("YYYY-MM-dd");
+        String date1 = dFormat.format(ReciveDate.getDate());
+        DrugIsueeInfo drugIsueeInfo = new DrugIsueeInfo();
+        drugIsueeInfo.setOderId(oderid);
+        drugIsueeInfo.setFullTotal(Double.valueOf(total));
+        drugIsueeInfo.setCashIn(Double.valueOf(cashin));
+        drugIsueeInfo.setBalance(Double.valueOf(balance));
+        drugIsueeInfo.setDate(date1);
+
+        boolean result = false;
+        DrugIssueLogic tableupdate = new DrugIssueLogic();
+        try {
+            result = tableupdate.saveIsueeSummery(drugIsueeInfo);
+        } catch (ParseException ex) {
+            Logger.getLogger(DrugIssue.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (result) {
+            JOptionPane.showMessageDialog(null, "data entered Sucsessfully");
+        } else {
+            JOptionPane.showMessageDialog(null, "there is error while entering data ");
+        }
+    }//GEN-LAST:event_issueActionPerformed
 
     /**
      * @param args the command line arguments

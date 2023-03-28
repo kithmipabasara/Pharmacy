@@ -257,16 +257,28 @@
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="NumberOfItems">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
+      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NumberOfItemsActionPerformed"/>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="NumberOfItemsKeyPressed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="Total">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0.0"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="FullTotal">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="0.0"/>
+      </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="CashIn">
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="CashInKeyPressed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="Balance">
       <Events>
@@ -285,6 +297,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="issue"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="issueActionPerformed"/>
+      </Events>
     </Component>
     <Component class="com.toedter.calendar.JDateChooser" name="ReciveDate">
     </Component>
